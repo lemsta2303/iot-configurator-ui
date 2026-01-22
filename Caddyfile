@@ -1,0 +1,25 @@
+{
+	admin off
+
+	log {
+		format console
+	}
+}
+
+:80 {
+	# API
+	handle_path /api/* {
+		reverse_proxy {$API_HOST:mqtt-app}:{$API_PORT:8000} {
+			header_up Host {host}
+		}
+	}
+
+	# Frontend
+	handle {
+		root * /usr/share/caddy
+
+		try_files {path} {path}/ /index.html
+
+		file_server
+	}
+}
